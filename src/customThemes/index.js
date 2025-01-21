@@ -10,6 +10,11 @@ import classic5 from './classic5'
 import dark3 from './dark3'
 import dark4 from './dark4'
 import cactus from './cactus'
+import classic from './classic'
+import minimal from './minimal'
+import thesis1 from './thesis1'
+import thesis2 from './thesis2'
+import thesis3 from './thesis3'
 
 export default [
     {
@@ -82,6 +87,36 @@ export default [
         name: '仙人掌',
         value: 'cactus',
         theme: cactus,
+        dark: false
+    },
+    {
+        name: 'XMind经典',
+        value: 'classic',
+        theme: classic,
+        dark: false
+    },
+    {
+        name: 'Word论文',
+        value: 'minimal',
+        theme: minimal,
+        dark: false
+    },
+    {
+        name: '硕士论文1',
+        value: 'thesis1',
+        theme: thesis1,
+        dark: false
+    },
+    {
+        name: '硕士论文2',
+        value: 'thesis2',
+        theme: thesis2,
+        dark: false
+    },
+    {
+        name: '博士论文',
+        value: 'thesis3',
+        theme: thesis3,
         dark: false
     }
 ]

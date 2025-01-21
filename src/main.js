@@ -11,7 +11,7 @@ import VueViewer from 'v-viewer'
 import i18n from './i18n.js'
 // import VConsole from 'vconsole'
 // const vConsole = new VConsole()
-
+import './main.css'
 const app = createApp(App)
 
 app.config.productionTip = false

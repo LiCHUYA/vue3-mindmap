@@ -46,7 +46,7 @@ defineExpose({
 .sidebarContainer {
   position: fixed;
   right: -305px;
-  top: 0;
+  top: 75px;
   bottom: 0;
   width: 305px;
   background: @bg-white;

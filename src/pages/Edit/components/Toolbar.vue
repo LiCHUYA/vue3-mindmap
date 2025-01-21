@@ -1,17 +1,17 @@
 <template>
   <div class="toolbar-container" :class="{ isDark }">
     <div class="toolbar" ref="toolbarRef">
-      <!-- 基础操作组 -->
+      <!-- 文件操作组 -->
       <div class="toolbar-group">
-        <div class="toolbar-btn primary" @click="createNewLocalFile" title="新建文件">
+        <div class="toolbar-btn primary" @click="createNewLocalFile">
           <span class="icon iconfont iconxinjian"></span>
           <span class="text">{{ $t('toolbar.newFile') }}</span>
         </div>
-        <div class="toolbar-btn" @click="openLocalFile" title="打开文件">
+        <div class="toolbar-btn" @click="openLocalFile">
           <span class="icon iconfont icondakai"></span>
           <span class="text">{{ $t('toolbar.openFile') }}</span>
         </div>
-        <div class="toolbar-btn" @click="saveLocalFile" title="另存为">
+        <div class="toolbar-btn" @click="saveLocalFile">
           <span class="icon iconfont iconlingcunwei"></span>
           <span class="text">{{ $t('toolbar.saveAs') }}</span>
         </div>
@@ -33,11 +33,11 @@
 
       <!-- 导入导出组 -->
       <div class="toolbar-group">
-        <div class="toolbar-btn" @click="emit('showImport')" title="导入">
+        <div class="toolbar-btn" @click="emit('showImport')">
           <span class="icon iconfont icondaoru"></span>
           <span class="text">{{ $t('toolbar.import') }}</span>
         </div>
-        <div class="toolbar-btn" @click="emit('showExport')" title="导出">
+        <div class="toolbar-btn" @click="emit('showExport')">
           <span class="icon iconfont iconexport"></span>
           <span class="text">{{ $t('toolbar.export') }}</span>
         </div>
@@ -357,139 +357,102 @@ export default {
 
   .toolbar {
     display: flex;
-    padding: @spacing-mini @spacing-base;
-    border-radius: @border-radius-base;
+    padding: 10px 6px;
+    border-radius: 8px;
     font-family: @font-family;
     align-items: center;
-    height: 56px;
-    justify-content: space-between;
     background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid @border-light;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05),
+      0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 52px;
+
+    &:hover {
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08),
+        0 6px 16px rgba(0, 0, 0, 0.1);
+    }
 
     .toolbar-group {
-      display: flex;
-      padding: 0;
-      margin: 0 @spacing-mini;
       position: relative;
-      height: 100%;
+      padding: 0 10px;
+      display: flex;
       align-items: center;
+      height: 100%;
+      gap: 4px;
 
-      &::after {
+      &:not(:last-child)::after {
         content: '';
         position: absolute;
-        right: -@spacing-base;
-        top: 20%;
-        height: 60%;
+        right: 0;
+        top: 15%;
+        height: 70%;
         width: 1px;
         background: linear-gradient(180deg,
             transparent 0%,
-            fade(@border-color, 60%) 20%,
-            fade(@border-color, 60%) 80%,
+            rgba(0, 0, 0, 0.08) 20%,
+            rgba(0, 0, 0, 0.08) 80%,
             transparent 100%);
-        opacity: 0.8;
-      }
-
-      &:first-child {
-        margin-left: 0;
-      }
-
-      &:last-child {
-        margin-right: 0;
-
-        &::after {
-          display: none;
-        }
       }
 
       .toolbar-btn {
-        display: flex;
-        flex-direction: column;
+        height: 32px;
+        min-width: 58px;
+        padding: 0 8px;
+        border-radius: 4px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: @spacing-mini @spacing-mini;
-        border-radius: @border-radius-small;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
-        color: @text-regular;
-        position: relative;
-        width: 64px;
-        height: 100%;
-        margin: 0 2px;
-
-        &::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 100%;
-          height: 100%;
-          transform: translate(-50%, -50%);
-          transition: background-color 0.2s;
-          border-radius: @border-radius-small;
-        }
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        color: rgba(0, 0, 0, 0.68);
+        user-select: none;
 
         &:hover {
-          color: @text-primary;
-
-          &::before {
-            background: fade(@primary-color, 6%);
-          }
+          background: rgba(0, 0, 0, 0.04);
+          color: rgba(0, 0, 0, 0.88);
 
           .icon {
-            transform: scale(1.1);
+            transform: scale(1.02);
           }
         }
 
-        &.active {
-          color: @primary-color;
-
-          &::before {
-            background: fade(@primary-color, 10%);
-          }
-
-          &::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            width: 24px;
-            height: 2px;
-            background: @primary-color;
-            border-radius: 2px 2px 0 0;
-            transform: translateX(-50%);
-          }
+        &:active {
+          background: rgba(0, 0, 0, 0.08);
+          transform: scale(0.99);
         }
 
-        &.disabled {
-          color: @text-disabled;
-          cursor: not-allowed;
-          pointer-events: none;
-          opacity: 0.5;
+        &.primary {
+          color: var(--el-color-primary);
+          background: rgba(var(--el-color-primary-rgb), 0.06);
+
+          &:hover {
+            background: rgba(var(--el-color-primary-rgb), 0.1);
+            color: var(--el-color-primary-dark-2);
+          }
+
+          &:active {
+            background: rgba(var(--el-color-primary-rgb), 0.15);
+          }
         }
 
         .icon {
-          font-size: 18px;
-          height: 20px;
-          width: 20px;
-          margin-bottom: 2px;
-          transition: transform 0.2s ease;
+          font-size: 13px;
+          height: 14px;
+          width: 14px;
+          margin-right: 4px;
           display: inline-flex;
           justify-content: center;
           align-items: center;
-          color: inherit;
-          position: relative;
-          z-index: 1;
         }
 
         .text {
-          font-size: @font-size-small;
-          white-space: nowrap;
-          position: relative;
-          z-index: 1;
-          transform: scale(0.85);
-          transform-origin: center;
+          font-size: 12px;
+          transform: scale(0.9);
+          line-height: 1;
+          letter-spacing: 0.2px;
         }
       }
     }
@@ -497,28 +460,47 @@ export default {
 
   &.isDark {
     .toolbar {
-      background: rgba(24, 24, 28, 0.98);
-      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(28, 30, 35, 0.98);
+      border-color: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
+        0 3px 8px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        background: rgba(35, 38, 45, 0.98);
+      }
 
       .toolbar-group {
-        border-color: rgba(255, 255, 255, 0.08);
-
-        &::after {
+        &:not(:last-child)::after {
           background: linear-gradient(180deg,
               transparent 0%,
-              rgba(255, 255, 255, 0.08) 20%,
-              rgba(255, 255, 255, 0.08) 80%,
+              rgba(255, 255, 255, 0.06) 20%,
+              rgba(255, 255, 255, 0.06) 80%,
               transparent 100%);
         }
 
         .toolbar-btn {
-          color: rgba(255, 255, 255, 0.85);
+          color: rgba(255, 255, 255, 0.8);
 
           &:hover {
-            color: rgba(255, 255, 255, 1);
+            color: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.08);
+          }
 
-            &::before {
-              background: fade(@primary-color, 15%);
+          &:active {
+            background: rgba(255, 255, 255, 0.12);
+          }
+
+          &.primary {
+            color: var(--el-color-primary-light-3);
+            background: rgba(var(--el-color-primary-rgb), 0.12);
+
+            &:hover {
+              background: rgba(var(--el-color-primary-rgb), 0.16);
+              color: var(--el-color-primary-light-5);
+            }
+
+            &:active {
+              background: rgba(var(--el-color-primary-rgb), 0.2);
             }
           }
         }
@@ -527,23 +509,41 @@ export default {
   }
 
   @media screen and (max-width: 768px) {
-    .toolbar-container {
-      top: @spacing-small;
-      padding: 0 @spacing-base;
+    top: @spacing-small;
+    padding: 0 @spacing-base;
 
-      .toolbar {
-        width: 100%;
-        overflow-x: auto;
-        padding: @spacing-mini;
+    .toolbar {
+      width: 100%;
+      overflow-x: auto;
+      padding: 8px 4px;
+      -webkit-overflow-scrolling: touch;
+      height: 48px;
 
-        .toolbar-group {
-          flex-shrink: 0;
-          margin: 0 @spacing-mini;
+      .toolbar-group {
+        padding: 0 6px;
+        flex-shrink: 0;
+        gap: 3px;
 
-          .toolbar-btn {
-            width: 56px;
+        .toolbar-btn {
+          height: 30px;
+          min-width: 50px;
+          padding: 0 6px;
+
+          .icon {
+            font-size: 12px;
+            height: 13px;
+            width: 13px;
+            margin-right: 3px;
+          }
+
+          .text {
+            font-size: 12px;
           }
         }
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
       }
     }
   }

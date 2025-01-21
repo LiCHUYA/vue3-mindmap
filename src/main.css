@@ -1,0 +1,4 @@
+:deep(.sidebarContainer.show){
+    position: relative;
+    z-index: 999999;
+}

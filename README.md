@@ -1,13 +1,22 @@
 # 一个基于Vue3.2 + ElementPlus的Web思维导图
 
 ## 项目预览
-### 项目地址：[思维导图](https://huangyuanyin.gitee.io/hyy-vue3-mindmap/#/)
-![image](https://github.com/huangyuanyin/hyy-vue3-mindMap/assets/42410679/de1f7a5c-b9a8-443c-ada7-ba85728f6760)
-![image](https://github.com/huangyuanyin/hyy-vue3-mindMap/assets/42410679/ba50db92-df06-4ff0-8621-ab089c685fba)
-![image](https://github.com/huangyuanyin/hyy-vue3-mindMap/assets/42410679/3fda4eb2-f473-40b3-afcd-bd10bbcee52c)
+
+整体
 
 
 
+![image-20250121155503197](D:\study_project\hyy-vue3-mindMap\image-20250121155503197.png)
+
+配置侧边栏
+
+![image-20250121155518744](D:\study_project\hyy-vue3-mindMap\image-20250121155518744.png)
+
+搜索
+
+![image-20250121155653151](D:\study_project\hyy-vue3-mindMap\image-20250121155653151.png)
+
+### 项目地址：
 
 ## 特性
 
@@ -39,24 +48,11 @@
 
 - [x] 底部栏，支持节点数量、字数统计；支持切换编辑和只读模式；支持放大缩小；支持全屏切换；支持小地图
 
-## 开发
-
-### 本地开发
-```bash
-git clone https://github.com/huangyuanyin/hyy-vue3-mindMap.git
-npm i
-npm run serve
-```
-
-## 后期计划
-- [ ] 将项目从 vue-cli 迁移至 vite
-- [ ] 将项目由 JS 改至 TS编写
-
 # 特别说明
 
 本项目较粗糙，未进行完整测试，功能尚不是很完善，性能也存在一些问题，仅用于学习和参考，请勿用于实际项目。
 
-本项目基于https://github.com/wanglin2/mind-map 上重构vue3 + elementplus版本。
+本项目基于https://github.com/wanglin2/mind-map  和 https://github.com/huangyuanyin/hyy-vue3-mindMap 上重构vue3 + elementplus版本。
 
 项目内置的主题和图标来自于：
 

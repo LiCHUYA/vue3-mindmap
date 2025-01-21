@@ -60,7 +60,9 @@
 
         <div class="item">
           <el-tooltip effect="dark" :content="$t('初始化')" placement="top">
-            <div class="btn iconfont icondingwei" @click="handleInit"></div>
+            <el-icon class="btn" @click="handleInit">
+              <Refresh />
+            </el-icon>
           </el-tooltip>
         </div>
 
@@ -83,6 +85,7 @@ import bus from '@/utils/bus.js'
 import { langList } from '@/config'
 import i18n from '@/i18n.js'
 import { storeLang, getLang } from '@/api'
+import { Refresh } from '@element-plus/icons-vue'
 
 const props = defineProps({
   mindMap: {

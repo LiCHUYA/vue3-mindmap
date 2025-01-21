@@ -300,7 +300,7 @@ export default {
         data: root,
         fit: false,
         layout: layout,
-        theme: theme.template,
+        theme: theme.template || 'thesis1',
         themeConfig: theme.config,
         viewData: view,
         nodeTextEditZIndex: 1000,
@@ -369,36 +369,36 @@ export default {
       this.mindMap.keyCommand.addShortcut('Control+s', () => {
         this.manualSave()
       })
-      // 转发事件
-      ;[
-        'node_active',
-        'data_change',
-        'view_data_change',
-        'back_forward',
-        'node_contextmenu',
-        'node_click',
-        'draw_click',
-        'expand_btn_click',
-        'svg_mousedown',
-        'mouseup',
-        'mode_change',
-        'node_tree_render_end',
-        'rich_text_selection_change',
-        'transforming-dom-to-images',
-        'generalization_node_contextmenu',
-        'painter_start',
-        'painter_end',
-        'scrollbar_change',
-        'scale'
-      ].forEach(event => {
-        this.getMindMap().on(event, (...args) => {
-          if (['node_contextmenu', 'node_active', 'rich_text_selection_change'].includes(event)) {
-            bus.emit(event, args)
-          } else {
-            bus.emit(event, ...args)
-          }
+        // 转发事件
+        ;[
+          'node_active',
+          'data_change',
+          'view_data_change',
+          'back_forward',
+          'node_contextmenu',
+          'node_click',
+          'draw_click',
+          'expand_btn_click',
+          'svg_mousedown',
+          'mouseup',
+          'mode_change',
+          'node_tree_render_end',
+          'rich_text_selection_change',
+          'transforming-dom-to-images',
+          'generalization_node_contextmenu',
+          'painter_start',
+          'painter_end',
+          'scrollbar_change',
+          'scale'
+        ].forEach(event => {
+          this.getMindMap().on(event, (...args) => {
+            if (['node_contextmenu', 'node_active', 'rich_text_selection_change'].includes(event)) {
+              bus.emit(event, args)
+            } else {
+              bus.emit(event, ...args)
+            }
+          })
         })
-      })
       this.bindSaveEvent()
       this.testDynamicCreateNodes()
       // 解析url中的文件

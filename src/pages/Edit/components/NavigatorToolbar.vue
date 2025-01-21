@@ -57,6 +57,13 @@
             <div class="btn iconfont icondingwei" @click="backToRoot"></div>
           </el-tooltip>
         </div>
+
+        <div class="item">
+          <el-tooltip effect="dark" :content="$t('初始化')" placement="top">
+            <div class="btn iconfont icondingwei" @click="handleInit"></div>
+          </el-tooltip>
+        </div>
+
       </div>
     </div>
   </div>
@@ -120,6 +127,30 @@ const backToRoot = () => {
     excuteCommandList && excuteCommandList['Control+Enter'][0]()
   }
 }
+
+const handleInit = () => {
+  // 创建新的初始数据
+  const newData = {
+    root: {
+      data: {
+        text: "新的根节点"
+      },
+      children: []
+    },
+    theme: {
+      template: 'thesis1',
+      config: {
+        backgroundColor: '#ffffff'
+      }
+    },
+    layout: 'logicalStructure',
+    config: {}
+  }
+
+  // 使用 Edit 组件的 setData 方法更新数据
+  bus.emit('setData', newData)
+}
+
 </script>
 
 <script>

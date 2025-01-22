@@ -2,7 +2,7 @@
   <div class="navigatorContainer" :class="{ isDark }">
     <!-- 基础操作组 -->
     <div class="toolbar-group">
-      <div class="group-label">{{ $t('基础') }}</div>
+      <div class="group-label">{{ $t('basic') }}</div>
       <div class="group-items">
         <div class="item">
           <el-select v-model="lang" size="small" class="lang-select" @change="onLangChange">
@@ -17,7 +17,7 @@
 
     <!-- 视图操作组 -->
     <div class="toolbar-group">
-      <div class="group-label">{{ $t('视图') }}</div>
+      <div class="group-label">{{ $t('view') }}</div>
       <div class="group-items">
         <div class="item">
           <MouseAction :isDark="isDark" :mindMap="mindMap"></MouseAction>
@@ -40,7 +40,7 @@
 
     <!-- 模式切换组 -->
     <div class="toolbar-group">
-      <div class="group-label">{{ $t('模式') }}</div>
+      <div class="group-label">{{ $t('mode') }}</div>
       <div class="group-items">
         <div class="item">
           <el-tooltip effect="dark"
@@ -53,13 +53,13 @@
           <div class="btn iconfont" :class="[isDark ? 'iconmoon_line' : 'iconlieri']" @click="toggleDark"></div>
         </div>
         <div class="item">
-          <el-tooltip effect="dark" :content="$t('回到根节点')" placement="top">
+          <el-tooltip effect="dark" content="回到根节点" placement="top">
             <div class="btn iconfont icondingwei" @click="backToRoot"></div>
           </el-tooltip>
         </div>
 
         <div class="item">
-          <el-tooltip effect="dark" :content="$t('初始化')" placement="top">
+          <el-tooltip effect="dark" content="初始化" placement="top">
             <el-icon class="btn" @click="handleInit">
               <Refresh />
             </el-icon>

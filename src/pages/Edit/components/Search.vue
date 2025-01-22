@@ -1,7 +1,7 @@
 <template>
   <div class="search-container" v-show="visible" :class="{ isDark }" @click.self="close" @mousedown.stop>
     <div class="search-box">
-      <el-input v-model="keyword" :placeholder="$t('输入点什么....')" @input="onSearch" ref="input" autofocus>
+      <el-input v-model="keyword" placeholder="输入点什么...." @input="onSearch" ref="input" autofocus>
         <template #prefix>
           <el-icon class="search-icon">
             <Search />

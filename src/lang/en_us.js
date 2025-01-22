@@ -100,6 +100,9 @@ export default {
     cancel: 'Cancel',
     confirm: 'Confirm'
   },
+  basic: 'Basic',
+  view: 'View',
+  mode: 'Mode',
   export: {
     title: 'Export',
     filename: 'Filename',
@@ -142,7 +145,12 @@ export default {
     openMiniMap: 'Open mini map',
     closeMiniMap: 'Close mini map',
     readonly: 'Change to eadonly',
-    edit: 'Change to edit'
+    edit: 'Change to edit',
+    backToRoot: 'Back to Root Node (Ctrl+Enter)',
+    init: 'Initialize'
+  },
+  search: {
+    placeholder: 'Type something....'
   },
   nodeHyperlink: {
     title: 'Link',

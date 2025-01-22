@@ -1,7 +1,6 @@
 <template>
-  <el-dialog custom-class="nodeImageDialog" v-model="dialogVisible" title="设置节点图片" width="580px">
+  <el-dialog custom-class="nodeImageDialog" v-model="dialogVisible" title="设置节点图片" width="480px">
     <div class="image-setting-container">
-      <!-- 上传区域 -->
       <div class="section">
         <div class="section-title">
           <el-icon>
@@ -9,10 +8,9 @@
           </el-icon>
           <span>上传图片</span>
         </div>
-        <ImgUpload ref="ImgUploadRef" @change="handleImageChange" :value="img" class="upload-area" />
+        <ImgUpload ref="ImgUploadRef" @changeImg="onchange" :value="img" class="upload-area" />
       </div>
 
-      <!-- URL输入区域 -->
       <div class="section">
         <div class="section-title">
           <el-icon>
@@ -20,7 +18,7 @@
           </el-icon>
           <span>图片地址</span>
         </div>
-        <el-input v-model="imgUrl" size="default" placeholder="请输入图片URL地址" @keydown.stop>
+        <el-input v-model="imgUrl" placeholder="请输入图片URL地址" @keydown.native.stop>
           <template #prefix>
             <el-icon>
               <Picture />
@@ -29,7 +27,6 @@
         </el-input>
       </div>
 
-      <!-- 图片标题区域 -->
       <div class="section">
         <div class="section-title">
           <el-icon>
@@ -37,7 +34,7 @@
           </el-icon>
           <span>图片标题</span>
         </div>
-        <el-input v-model="imgTitle" size="default" placeholder="请输入图片标题（可选）" @keydown.stop>
+        <el-input v-model="imgTitle" placeholder="请输入图片标题（可选）" @keydown.native.stop>
           <template #prefix>
             <el-icon>
               <Document />
@@ -48,12 +45,10 @@
     </div>
 
     <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">
-          确定
-        </el-button>
-      </div>
+      <span class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
     </template>
   </el-dialog>
 </template>
@@ -63,13 +58,17 @@
  * @Author: 黄原寅
  * @Desc: 节点图片内容设置
  */
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Upload, Link, Picture, EditPen, Document } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import ImgUpload from '@/components/ImgUpload'
 import { getImageSize } from 'simple-mind-map/src/utils/index'
 import bus from '@/utils/bus.js'
-
+import {
+  Upload,
+  Link,
+  EditPen,
+  Picture,
+  Document
+} from '@element-plus/icons-vue'
 const dialogVisible = ref(false)
 const img = ref('')
 const imgUrl = ref('')
@@ -82,7 +81,7 @@ onMounted(() => {
   bus.on('showNodeImage', handleShowNodeImage)
 })
 
-onBeforeUnmount(() => {
+onBeforeMount(() => {
   bus.off('node_active', handleNodeActive)
   bus.off('showNodeImage', handleShowNodeImage)
 })
@@ -93,9 +92,9 @@ const handleNodeActive = args => {
 
 const handleShowNodeImage = () => {
   reset()
-  if (activeNodes.value?.length > 0) {
-    const firstNode = activeNodes.value[0]
-    const imgSrc = firstNode.getData('image') || ''
+  if (activeNodes.value.length > 0) {
+    let firstNode = activeNodes.value[0]
+    let imgSrc = firstNode.getData('image') || ''
     if (imgSrc) {
       if (/^https?:\/\//.test(imgSrc)) {
         imgUrl.value = imgSrc
@@ -108,13 +107,17 @@ const handleShowNodeImage = () => {
   dialogVisible.value = true
 }
 
-const handleImageChange = src => {
+const onchange = src => {
   img.value = src
-  imgUrl.value = '' // 清空URL输入，避免冲突
 }
 
+/**
+ * @Author: 黄原寅
+ * @Desc: 取消
+ */
 const cancel = () => {
   dialogVisible.value = false
+  img.value = ''
   reset()
 }
 
@@ -124,40 +127,41 @@ const reset = () => {
   imgUrl.value = ''
 }
 
-const handleConfirm = async () => {
+/**
+ * @Author: 黄原寅
+ * @Desc:  确定
+ */
+const confirm = async () => {
+  console.log(`output->img.value`, imgUrl.value)
   try {
     // 删除图片
     if (!img.value && !imgUrl.value) {
       cancel()
-      activeNodes.value?.forEach(node => {
+      activeNodes.value.forEach(node => {
         node.setImage(null)
       })
       return
     }
-
-    let imageSize = null
+    let res = null
     let imgSrc = ''
-
     if (img.value) {
       imgSrc = img.value
-      imageSize = await ImgUploadRef.value.getSize()
+      res = await ImgUploadRef.value.getSize()
     } else if (imgUrl.value) {
       imgSrc = imgUrl.value
-      imageSize = await getImageSize(imgSrc)
+      res = await getImageSize(imgSrc)
     }
-
-    activeNodes.value?.forEach(node => {
+    activeNodes.value.forEach(node => {
       node.setImage({
-        url: imgSrc,
+        url: imgSrc || 'none',
         title: imgTitle.value,
-        width: imageSize.width,
-        height: imageSize.height
+        width: res.width,
+        height: res.height
       })
     })
     cancel()
   } catch (error) {
-    ElMessage.error('设置图片失败，请检查图片地址是否正确')
-    console.error('设置图片失败:', error)
+    console.log(`output->error`, error)
   }
 }
 </script>
@@ -171,57 +175,153 @@ export default {
 <style lang="less" scoped>
 .nodeImageDialog {
   .image-setting-container {
-    padding: 0 12px;
+    padding: 20px 24px;
 
     .section {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       .section-title {
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         color: var(--el-text-color-primary);
         font-weight: 500;
+        font-size: 14px;
 
         .el-icon {
-          margin-right: 8px;
-          font-size: 16px;
-        }
-
-        span {
-          font-size: 14px;
+          margin-right: 6px;
+          font-size: 15px;
+          color: var(--el-text-color-secondary);
         }
       }
 
       .upload-area {
-        margin-top: 8px;
+        border: 1px dashed var(--el-border-color);
+        border-radius: 4px;
+        padding: 16px;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: var(--el-color-primary);
+          background: var(--el-color-primary-light-9);
+        }
       }
 
       .el-input {
         .el-input__wrapper {
-          padding-left: 8px;
+          padding: 0 12px;
+          height: 36px;
+          background: var(--el-bg-color-page);
+          box-shadow: 0 0 0 1px var(--el-border-color) inset;
+          transition: all 0.2s;
+
+          &:hover {
+            box-shadow: 0 0 0 1px var(--el-border-color-hover) inset;
+          }
+
+          &.is-focus {
+            box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+            background: var(--el-bg-color);
+          }
         }
 
-        .el-input__prefix {
+        :deep(.el-input__prefix) {
           margin-right: 8px;
+          height: 100%;
+          display: flex;
+          align-items: center;
+
+          .el-icon {
+            font-size: 16px;
+            color: var(--el-text-color-secondary);
+            line-height: 1;
+          }
+        }
+
+        .el-input__inner {
+          height: 36px;
+          line-height: 36px;
+          font-size: 14px;
+          color: var(--el-text-color-primary);
+
+          &::placeholder {
+            color: var(--el-text-color-placeholder);
+            font-size: 14px;
+          }
         }
       }
     }
   }
+}
 
-  .dialog-footer {
-    padding-top: 8px;
-    text-align: right;
-  }
+:deep(.el-dialog) {
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
 :deep(.el-dialog__header) {
-  margin-bottom: 8px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
+  margin: 0;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--el-border-color-light);
+  background: var(--el-bg-color);
+
+  .el-dialog__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+    line-height: 1.4;
+  }
 }
 
 :deep(.el-dialog__body) {
-  padding-top: 16px;
+  padding: 0 !important;
+  background: var(--el-bg-color);
+}
+
+:deep(.el-dialog__footer) {
+  margin: 0;
+  padding: 16px 24px;
+  border-top: 1px solid var(--el-border-color-light);
+  background: var(--el-bg-color);
+
+  .el-button {
+    height: 36px;
+    padding: 0 16px;
+    font-size: 15px;
+    border-radius: 4px;
+    font-weight: 500;
+    min-width: 80px;
+
+    &--default {
+      border-color: var(--el-border-color);
+      color: var(--el-text-color-regular);
+      background: var(--el-bg-color-page);
+
+      &:hover {
+        color: var(--el-text-color-primary);
+        border-color: var(--el-border-color-hover);
+        background: var(--el-bg-color);
+      }
+    }
+
+    &--primary {
+      &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(var(--el-color-primary-rgb), 0.3);
+      }
+
+      &:active {
+        transform: translateY(1px);
+        box-shadow: none;
+      }
+    }
+  }
 }
 </style>

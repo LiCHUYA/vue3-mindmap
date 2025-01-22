@@ -1,4 +1,8 @@
 export default {
+  // 导航栏分组标题
+  basic: '基础',
+  view: '视图',
+  mode: '模式',
   baseStyle: {
     title: '基础样式',
     background: '背景',
@@ -142,7 +146,14 @@ export default {
     openMiniMap: '开启小地图',
     closeMiniMap: '关闭小地图',
     readonly: '切换为只读模式',
-    edit: '切换为编辑模式'
+    edit: '切换为编辑模式',
+    // 工具提示
+    backToRoot: '回到根节点 (Ctrl+Enter)',
+    init: '初始化'
+  },
+  // 搜索框
+  search: {
+    placeholder: '输入点什么....'
   },
   nodeHyperlink: {
     title: '超链接',

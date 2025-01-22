@@ -4,7 +4,19 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { getCurrentInstance } from 'vue'
+
+const app = getCurrentInstance()
+if (app) {
+  app.appContext.config.warnHandler = () => null
+}
+console.log = () => { }
+console.info = () => { }
+console.warn = () => { }
+console.error = () => { }
+console.debug = () => { }
+</script>
 
 <style>
 * {
@@ -12,6 +24,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

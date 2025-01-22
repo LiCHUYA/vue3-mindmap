@@ -5,16 +5,16 @@
     <div class="exportContainer" :class="{ isDark: isDark }">
       <div class="nameInputBox">
         <span class="name">{{ $t('export.filename') }}</span>
-        <el-input style="width: 220px" v-model="fileName" @keydown.native.stop></el-input>
+        <el-input style="width: 220px" v-model="fileName" @keydown.stop></el-input>
         <el-checkbox v-show="['smm', 'json'].includes(exportType)" v-model="widthConfig" style="margin-left: 12px">
           {{ $t('export.include') }}
         </el-checkbox>
       </div>
       <div class="paddingInputBox" v-show="['svg', 'png', 'pdf'].includes(exportType)">
         <span class="name">{{ $t('export.paddingX') }}</span>
-        <el-input style="width: 70px" v-model="paddingX" @change="onPaddingChange" @keydown.native.stop></el-input>
+        <el-input style="width: 70px" v-model="paddingX" @change="onPaddingChange" @keydown.stop></el-input>
         <span class="name" style="margin-left: 10px">{{ $t('export.paddingY') }}</span>
-        <el-input style="width: 70px" v-model="paddingY" @change="onPaddingChange" @keydown.native.stop></el-input>
+        <el-input style="width: 70px" v-model="paddingY" @change="onPaddingChange" @keydown.stop></el-input>
         <el-checkbox v-show="['png', 'pdf'].includes(exportType)" v-model="isTransparent" style="margin-left: 12px">{{
           $t('export.isTransparent')
         }}</el-checkbox>
@@ -79,6 +79,8 @@ onBeforeMount(() => {
 
 const handleShowExport = () => {
   dialogVisible.value = true
+  loading.value = false
+  loadingText.value = ''
 }
 
 const onPaddingChange = () => {
@@ -101,28 +103,20 @@ const cancel = () => {
  * @Desc:  确定导出
  */
 const confirm = () => {
-  bus.emit('export', [exportType.value, true, fileName.value, widthConfig.value]) // mitt只支持传入一个参数
   if (exportType.value === 'svg') {
-    bus.emit(
-      'export',
-      exportType.value,
-      true,
-      fileName.value,
-      `* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }`
-    )
+    bus.emit('export', exportType.value, true, fileName.value, `* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }`)
   } else if (['smm', 'json'].includes(exportType.value)) {
     bus.emit('export', exportType.value, true, fileName.value, widthConfig.value)
-  } else if (exportType.value === 'png') {
-    bus.emit('export', exportType.value, true, fileName.value, isTransparent.value)
-  } else if (exportType.value === 'pdf') {
+  } else if (['png', 'pdf'].includes(exportType.value)) {
     bus.emit('export', exportType.value, true, fileName.value, isTransparent.value)
   } else {
     bus.emit('export', exportType.value, true, fileName.value)
   }
+  
   cancel()
   ElNotification({
     title: t('export.notifyTitle'),

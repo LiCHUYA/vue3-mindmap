@@ -19,7 +19,7 @@
 
       <!-- 节点操作组 -->
       <div class="toolbar-group">
-        <ToolbarNodeBtnList :list="horizontalList" />
+        <ToolbarNodeBtnList :list="horizontalList" @click="handleNodeBtnClick" />
         <el-popover v-if="showMoreBtn" v-model="popoverShow" placement="bottom-end" trigger="hover" :width="200">
           <template #reference>
             <div class="toolbar-btn">
@@ -336,7 +336,13 @@ export default {
         this.$message.warning(this.$t('toolbar.notSupportTip'))
       }
     },
-    emit: (...agrs) => bus.emit(...agrs)
+    emit: (...agrs) => bus.emit(...agrs),
+    handleNodeBtnClick(type) {
+      console.log('Button clicked:', type)
+      if (type === 'link') {
+        bus.emit('show_hyperlink')
+      }
+    }
   }
 }
 </script>

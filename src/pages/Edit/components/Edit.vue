@@ -300,8 +300,8 @@ export default {
         data: root,
         fit: false,
         layout: layout,
-        theme: theme.template || 'thesis1',
-        themeConfig: theme.config,
+        theme: 'thesis1',//默认是最简洁的
+        themeConfig: { ...theme.config, backgroundColor: '#ffffff' },
         viewData: view,
         nodeTextEditZIndex: 1000,
         nodeNoteTooltipZIndex: 1000,

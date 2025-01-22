@@ -33,11 +33,20 @@
         <span class="icon iconfont icontianjiazijiedian"></span>
         <span class="text">{{ $t('toolbar.insertChildNode') }}</span>
       </div>
-      <div v-if="item === 'deleteNode'" class="toolbar-btn danger" :class="{ disabled: activeNodes.length <= 0 }"
-        @click="emit('execCommand', 'REMOVE_NODE')" title="删除节点 (Delete)">
-        <span class="icon iconfont iconshanchu"></span>
-        <span class="text">{{ $t('toolbar.deleteNode') }}</span>
-      </div>
+      <el-popconfirm v-if="item === 'deleteNode'" width="240" :title="getDeleteConfirmText()" confirm-button-text="删除"
+        cancel-button-text="取消" @confirm="emit('execCommand', 'REMOVE_NODE')">
+        <template #icon>
+          <el-icon class="delete-icon">
+            <WarningFilled />
+          </el-icon>
+        </template>
+        <template #reference>
+          <div class="toolbar-btn danger" :class="{ disabled: activeNodes.length <= 0 }" title="删除节点 (Delete)">
+            <span class="icon iconfont iconshanchu"></span>
+            <span class="text">{{ $t('toolbar.deleteNode') }}</span>
+          </div>
+        </template>
+      </el-popconfirm>
 
       <!-- 节点样式 -->
       <div v-if="item === 'image'" class="toolbar-btn" :class="{ disabled: activeNodes.length <= 0 }"
@@ -51,7 +60,7 @@
         <span class="text">{{ $t('toolbar.icon') }}</span>
       </div>
       <div v-if="item === 'link'" class="toolbar-btn" :class="{ disabled: activeNodes.length <= 0 }"
-        @click="emit('showNodeHyperlink')" title="添加超链接">
+        @click="handleClick('link')" title="添加超链接">
         <span class="icon iconfont iconchaolianjie"></span>
         <span class="text">{{ $t('toolbar.link') }}</span>
       </div>
@@ -91,8 +100,13 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import bus from '@/utils/bus.js'
+import { WarningFilled } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 export default {
+  components: {
+    WarningFilled
+  },
   props: {
     dir: {
       type: String,
@@ -179,7 +193,38 @@ export default {
     showFormula() {
       this.setActiveSidebar('formulaSidebar')
     },
-    emit: (...agrs) => bus.emit(...agrs)
+    // 获取删除确认文案
+    getDeleteConfirmText() {
+      const count = this.activeNodes.length
+      if (count === 1) {
+        return '确定要删除该节点吗？'
+      }
+      return `确定要删除这 ${count} 个节点吗？`
+    },
+    // 修改 emit 方法
+    emit(eventName, command) {
+      if (eventName === 'execCommand' && command === 'REMOVE_NODE') {
+        // 先触发删除事件
+        bus.emit(eventName, command)
+        // 显示成功提示
+        ElMessage({
+          message: '删除成功',
+          type: 'success',
+          duration: 1000,
+          offset: 50
+        })
+      } else {
+        bus.emit(eventName, command)
+      }
+    },
+    // 在组件中添加点击处理
+    handleClick(type) {
+      if (type === 'link') {
+        bus.emit('show_hyperlink')
+      } else {
+        this.emit('click', type)
+      }
+    }
   }
 }
 </script>
@@ -253,17 +298,15 @@ export default {
 
     &.danger {
       &:hover {
-        color: #ff4d4f;
-        background: fade(#ff4d4f, 10%);
+        color: #dc2626;
+        background: rgba(220, 38, 38, 0.08);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
       }
 
-      &.active {
-        color: #ff4d4f;
-        background: fade(#ff4d4f, 15%);
-
-        &::after {
-          background: #ff4d4f;
-        }
+      &:active {
+        transform: translateY(0);
+        background: rgba(220, 38, 38, 0.12);
       }
     }
 
@@ -326,6 +369,204 @@ export default {
         width: 2px;
         height: 50%;
         top: 25%;
+      }
+    }
+  }
+}
+
+// Popconfirm 样式优化
+:deep(.el-popconfirm) {
+  .el-popover.el-popper {
+    padding: 16px;
+    background: #ffffff;
+    border: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08),
+      0 3px 6px -4px rgba(0, 0, 0, 0.12),
+      0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
+
+  .delete-icon {
+    color: #dc2626;
+    font-size: 16px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  .el-popconfirm__main {
+    margin: 8px 0 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1f2937;
+    font-weight: 500;
+  }
+
+  .el-popconfirm__action {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .el-button {
+    margin: 0;
+    padding: 6px 16px;
+    height: 32px;
+    font-size: 13px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .el-button--default {
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    background: #ffffff;
+
+    &:hover {
+      color: #1f2937;
+      border-color: #d1d5db;
+      background: #f9fafb;
+    }
+
+    &:active {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+    }
+  }
+
+  .el-button--primary {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+
+    &:hover {
+      background: #b91c1c;
+      border-color: #b91c1c;
+      box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+    }
+
+    &:active {
+      background: #991b1b;
+      border-color: #991b1b;
+      box-shadow: none;
+    }
+  }
+}
+
+// 暗色模式适配
+&.isDark {
+  .toolbar-btn.danger {
+    &:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    &:active {
+      background: rgba(239, 68, 68, 0.2);
+    }
+  }
+
+  :deep(.el-popconfirm) {
+    .el-popover.el-popper {
+      background: #1f2937;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.32),
+        0 3px 6px -4px rgba(0, 0, 0, 0.24),
+        0 9px 28px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .delete-icon {
+      color: #ef4444;
+    }
+
+    .el-popconfirm__main {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .el-button--default {
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.85);
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      &:active {
+        background: rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    .el-button--primary {
+      background: #dc2626;
+      border-color: #dc2626;
+
+      &:hover {
+        background: #b91c1c;
+        border-color: #b91c1c;
+      }
+
+      &:active {
+        background: #991b1b;
+        border-color: #991b1b;
+      }
+    }
+  }
+}
+
+// 添加消息提示样式覆盖
+:deep(.el-message) {
+  min-width: auto;
+  padding: 10px 16px;
+  border-width: 0;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12);
+
+  .el-message__content {
+    font-size: 14px;
+    color: #1f2937;
+  }
+
+  &.el-message--success {
+    background: #f0fdf4;
+    border-color: #86efac;
+
+    .el-message__icon {
+      color: #22c55e;
+      margin-right: 10px;
+    }
+
+    .el-message__content {
+      color: #15803d;
+    }
+  }
+}
+
+// 暗色模式下的消息提示样式
+&.isDark {
+  :deep(.el-message) {
+    background: #1f2937;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.32),
+      0 3px 6px -4px rgba(0, 0, 0, 0.24);
+
+    &.el-message--success {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.2);
+
+      .el-message__icon {
+        color: #4ade80;
+      }
+
+      .el-message__content {
+        color: rgba(255, 255, 255, 0.95);
       }
     }
   }

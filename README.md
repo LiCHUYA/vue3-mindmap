@@ -6,15 +6,15 @@
 
 
 
-![image-20250121155503197](D:\study_project\hyy-vue3-mindMap\image-20250121155503197.png)
+![image-20250121155503197](https://pan.suyanw.cn/view.php/0a463e785abc6ab28933b721b075cd16.png)
 
 配置侧边栏
 
-![image-20250121155518744](D:\study_project\hyy-vue3-mindMap\image-20250121155518744.png)
+![image-20250121155518744](https://pan.suyanw.cn/view.php/a32d23e3b97c913bc779e985a26bda3e.png)
 
 搜索
 
-![image-20250121155653151](D:\study_project\hyy-vue3-mindMap\image-20250121155653151.png)
+![image-20250121155653151](https://pan.suyanw.cn/view.php/361644e283ceda3b290a547500eecc9c.png)
 
 ### 项目地址：
 

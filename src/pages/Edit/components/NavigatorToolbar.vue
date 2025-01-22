@@ -86,7 +86,7 @@ import { langList } from '@/config'
 import i18n from '@/i18n.js'
 import { storeLang, getLang } from '@/api'
 import { Refresh } from '@element-plus/icons-vue'
-
+import { ElMessageBox } from 'element-plus'
 const props = defineProps({
   mindMap: {
     type: Object
@@ -131,27 +131,49 @@ const backToRoot = () => {
   }
 }
 
-const handleInit = () => {
-  // 创建新的初始数据
-  const newData = {
-    root: {
-      data: {
-        text: "新的根节点"
-      },
-      children: []
-    },
-    theme: {
-      template: 'thesis1',
-      config: {
-        backgroundColor: '#ffffff'
+const handleInit = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '您确定需要初始化思维导图吗？<br/><br/>' +
+      '<div class="warning-content">' +
+      '<p>⚠️ 初始化后，当前数据和格式等等都将被清空初始化且无法恢复(重做/撤销)，建议提前备份您的数据。</p>' +
+      '<p class="tip">💡 小提示：如果只是想清空当前画布，可以使用 <kbd>Ctrl+A</kbd> 快捷键全部选中，再点击头部删除节点即可。</p>' +
+      '</div>',
+      '初始化确认',
+      {
+        confirmButtonText: '确认初始化',
+        cancelButtonText: '取消',
+        draggable: true,
+        closeOnClickModal: false,
+        customClass: 'init-confirm-dialog',
+        confirmButtonClass: 'init-confirm-btn',
+        cancelButtonClass: 'init-cancel-btn',
+        dangerouslyUseHTMLString: true, // 允许使用HTML标签
+        showClose: true
       }
-    },
-    layout: 'logicalStructure',
-    config: {}
-  }
+    )
+    // 用户确认后，执行初始化
+    const newData = {
+      root: {
+        data: {
+          text: '新的根节点'
+        },
+        children: []
+      },
+      theme: {
+        template: 'thesis1',
+        config: {
+          backgroundColor: '#ffffff'
+        }
+      },
+      layout: 'logicalStructure',
+      config: {}
+    }
 
-  // 使用 Edit 组件的 setData 方法更新数据
-  bus.emit('setData', newData)
+    bus.emit('setData', newData)
+  } catch (err) {
+    // 用户取消操作，不做任何处理
+  }
 }
 
 </script>
@@ -345,6 +367,169 @@ export default {
 
       &::-webkit-scrollbar {
         display: none;
+      }
+    }
+  }
+}
+</style>
+
+<style lang="less">
+.init-confirm-dialog {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  max-width: 480px;
+
+  .el-message-box__header {
+    padding: 20px 24px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ebeef5;
+
+    .el-message-box__title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #303133;
+
+      .el-message-box__status {
+        font-size: 22px;
+        padding-right: 10px;
+      }
+    }
+
+    .el-message-box__headerbtn {
+      top: 20px;
+      right: 24px;
+
+      &:hover .el-message-box__close {
+        color: #f56c6c;
+      }
+    }
+  }
+
+  .el-message-box__content {
+    padding: 24px;
+
+    .el-message-box__message {
+      padding-left: 0;
+
+      .warning-content {
+        p {
+          margin: 8px 0;
+          line-height: 1.6;
+          color: #606266;
+
+          &.tip {
+            margin-top: 16px;
+            color: #909399;
+            font-size: 13px;
+          }
+        }
+
+        kbd {
+          background: #f5f7fa;
+          border: 1px solid #e4e7ed;
+          border-radius: 4px;
+          padding: 2px 6px;
+          font-family: Monaco, monospace;
+          font-size: 12px;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+  .el-message-box__btns {
+    padding: 12px 24px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .init-confirm-btn {
+      background-color: #f56c6c;
+      border-color: #f56c6c;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #f78989;
+        border-color: #f78989;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(245, 108, 108, 0.3);
+      }
+
+      &:active {
+        background-color: #dd6161;
+        border-color: #dd6161;
+        transform: translateY(0);
+      }
+    }
+
+    .init-cancel-btn {
+      padding: 10px 20px;
+      font-weight: 500;
+      border-color: #dcdfe6;
+
+      &:hover {
+        border-color: #c6c8cc;
+        background-color: #f9f9fa;
+      }
+    }
+  }
+}
+
+/* 暗色主题样式 */
+.dark {
+  .init-confirm-dialog {
+    background-color: #1c1e23;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+
+    .el-message-box__header {
+      background: #262930;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      .el-message-box__title {
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .el-message-box__headerbtn .el-message-box__close {
+        color: rgba(255, 255, 255, 0.7);
+
+        &:hover {
+          color: #f56c6c;
+        }
+      }
+    }
+
+    .el-message-box__content {
+      .warning-content {
+        p {
+          color: rgba(255, 255, 255, 0.8);
+
+          &.tip {
+            color: rgba(255, 255, 255, 0.5);
+          }
+        }
+
+        kbd {
+          background: #2c2e34;
+          border-color: rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.9);
+        }
+      }
+    }
+
+    .el-message-box__btns {
+      .init-cancel-btn {
+        background: transparent;
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+
+        &:hover {
+          border-color: rgba(255, 255, 255, 0.3);
+          background-color: rgba(255, 255, 255, 0.05);
+        }
       }
     }
   }

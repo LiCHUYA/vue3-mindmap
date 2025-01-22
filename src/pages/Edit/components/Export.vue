@@ -1,22 +1,20 @@
 <template>
-  <el-dialog custom-class="nodeExportDialog" v-model="dialogVisible" :title="$t('export.title')" width="700px"
+  <el-dialog custom-class="nodeExportDialog" v-model="dialogVisible" :title="$t('export.title')" width="600px"
     v-loading.fullscreen.lock="loading" :element-loading-text="loadingText" element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="exportContainer" :class="{ isDark: isDark }">
       <div class="nameInputBox">
         <span class="name">{{ $t('export.filename') }}</span>
-        <el-input style="width: 300px" v-model="fileName" size="small" @keydown.native.stop></el-input>
+        <el-input style="width: 220px" v-model="fileName" @keydown.native.stop></el-input>
         <el-checkbox v-show="['smm', 'json'].includes(exportType)" v-model="widthConfig" style="margin-left: 12px">
           {{ $t('export.include') }}
         </el-checkbox>
       </div>
       <div class="paddingInputBox" v-show="['svg', 'png', 'pdf'].includes(exportType)">
         <span class="name">{{ $t('export.paddingX') }}</span>
-        <el-input style="width: 100px" v-model="paddingX" size="small" @change="onPaddingChange"
-          @keydown.native.stop></el-input>
+        <el-input style="width: 70px" v-model="paddingX" @change="onPaddingChange" @keydown.native.stop></el-input>
         <span class="name" style="margin-left: 10px">{{ $t('export.paddingY') }}</span>
-        <el-input style="width: 100px" v-model="paddingY" size="small" @change="onPaddingChange"
-          @keydown.native.stop></el-input>
+        <el-input style="width: 70px" v-model="paddingY" @change="onPaddingChange" @keydown.native.stop></el-input>
         <el-checkbox v-show="['png', 'pdf'].includes(exportType)" v-model="isTransparent" style="margin-left: 12px">{{
           $t('export.isTransparent')
         }}</el-checkbox>
@@ -142,7 +140,7 @@ export default {
 
 <style lang="less" scoped>
 .exportContainer {
-  padding: 24px 32px;
+  padding: 20px 24px;
 
   &.isDark {
     .downloadTypeList {
@@ -179,15 +177,16 @@ export default {
   .paddingInputBox {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
     .name {
-      min-width: 90px;
+      min-width: 80px;
       margin-right: 12px;
       color: var(--el-text-color-regular);
-      font-size: 14px;
+      font-size: 13px;
       text-align: right;
-      line-height: 28px;
+      line-height: 1;
+      white-space: nowrap;
 
       &::after {
         content: ':';
@@ -198,12 +197,10 @@ export default {
     }
 
     :deep(.el-input) {
-      width: 200px;
-
       .el-input__wrapper {
         padding: 0 12px;
-        height: 32px;
-        line-height: 32px;
+        height: 32px !important;
+        line-height: 32px !important;
         border-radius: 4px;
         border: 1px solid var(--el-border-color);
         box-shadow: none !important;
@@ -220,13 +217,14 @@ export default {
       }
 
       .el-input__inner {
-        height: 30px;
+        height: 32px !important;
         font-size: 13px;
       }
     }
 
     .el-checkbox {
       margin-left: 16px;
+      white-space: nowrap;
 
       :deep(.el-checkbox__label) {
         font-size: 13px;
@@ -235,6 +233,8 @@ export default {
 
       :deep(.el-checkbox__inner) {
         border-radius: 3px;
+        width: 14px;
+        height: 14px;
       }
     }
   }
@@ -251,20 +251,20 @@ export default {
   }
 
   .tip {
-    margin: 16px 0 24px;
-    padding: 8px 16px 8px 38px;
+    margin: 12px 0 16px;
+    padding: 8px 12px 8px 32px;
     background-color: #e6f7ff;
     border: 1px solid #91d5ff;
     border-radius: 2px;
     color: rgba(0, 0, 0, 0.85);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5715;
     position: relative;
 
     &::before {
       content: '!';
       position: absolute;
-      left: 16px;
+      left: 12px;
       top: 10px;
       color: #1890ff;
       font-weight: bold;
@@ -284,25 +284,25 @@ export default {
   .downloadTypeList {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 16px;
+    gap: 16px;
+    margin-top: 12px;
 
     .downloadTypeItem {
       position: relative;
-      height: 96px;
-      padding: 20px;
+      height: 84px;
+      padding: 16px;
       background: #fff;
       border: 1px solid #f0f0f0;
-      border-radius: 6px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         border-color: var(--el-color-primary-light-5);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
 
       &.active {
@@ -310,12 +310,12 @@ export default {
             var(--el-color-primary-light-9) 0%,
             rgba(255, 255, 255, 0.9) 100%);
         border-color: var(--el-color-primary);
-        box-shadow: 0 4px 16px rgba(var(--el-color-primary-rgb), 0.15);
+        box-shadow: 0 2px 8px rgba(var(--el-color-primary-rgb), 0.15);
       }
 
       .icon {
-        font-size: 32px;
-        margin-right: 16px;
+        font-size: 28px;
+        margin-right: 12px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &.png {
@@ -348,7 +348,7 @@ export default {
 
         .name {
           color: var(--el-text-color-primary);
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
           line-height: 1.4;
           margin-bottom: 4px;
@@ -356,7 +356,7 @@ export default {
 
         .desc {
           color: var(--el-text-color-secondary);
-          font-size: 13px;
+          font-size: 12px;
           line-height: 1.5;
         }
       }
@@ -375,14 +375,14 @@ export default {
   }
 
   .el-dialog__header {
-    padding: 16px 24px;
+    padding: 14px 20px;
     margin: 0;
     border-bottom: 1px solid #f0f0f0;
 
     .el-dialog__title {
       color: rgba(0, 0, 0, 0.85);
       font-weight: 500;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 24px;
     }
   }
@@ -392,14 +392,14 @@ export default {
   }
 
   .el-dialog__footer {
-    padding: 10px 16px;
+    padding: 12px 20px;
     border-top: 1px solid #f0f0f0;
 
     :deep(.el-button) {
       height: 32px;
-      padding: 4px 15px;
+      padding: 0 16px;
       border-radius: 2px;
-      font-size: 14px;
+      font-size: 13px;
 
       &--default {
         border-color: #d9d9d9;
